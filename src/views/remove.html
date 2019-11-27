@@ -1,0 +1,117 @@
+<html>
+  <head>
+    <title>sLock 🔒</title>
+    <style>
+      body {
+        background: #003559;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        font-family: Arial, sans-serif;
+      }
+
+      form {
+        width: 300px;
+        height: 250px;
+        background: #fff;
+        padding: 20px;
+        border-radius: 4px;
+      }
+
+      input,
+      label {
+        width: 300px;
+        height: 30px;
+        margin-top: 5px;
+        margin-bottom: 10px;
+        font-size: 14px;
+      }
+
+      input {
+        border: 1px solid #ccc;
+        padding-left: 5px;
+      }
+
+      input:disabled {
+        background-color: #fff;
+        border: #fff;
+        font-size: 18px;
+      }
+
+      label {
+        font-size: 18px;
+      }
+
+      button {
+        width: 300px;
+        height: 30px;
+        margin-top: 15px;
+        color: #fff !important;
+        text-transform: uppercase;
+        text-decoration: none;
+        background: #0353a4;
+        border-radius: 5px;
+        display: inline-block;
+        border: none;
+        transition: all 0.4s ease 0s;
+      }
+
+      button:hover {
+        background: #000000;
+        -webkit-box-shadow: 0px 5px 20px -10px rgba(0, 0, 0, 0.57);
+        -moz-box-shadow: 0px 5px 20px -10px rgba(0, 0, 0, 0.57);
+        box-shadow: 5px 20px -10px rgba(0, 0, 0, 0.57);
+        transition: all 0.4s ease 0s;
+      }
+    </style>
+  </head>
+  <body>
+    <form autocomplete="off">
+      <input
+        autocomplete="false"
+        name="hidden"
+        type="text"
+        style="display:none;"
+      />
+      <h2>Confirmar remoção do usuário</h2>
+      <label for="password">Senha para validação:</label>
+      <input type="password" name="password" id="password" />
+      <button type="button" onclick="handleSubmit()">
+        Enviar
+      </button>
+      <input type="text" disabled id="response" />
+    </form>
+
+    <script>
+      function handleSubmit() {
+        const password = document.getElementById("password").value;
+        const response = document.getElementById("response");
+
+        const data = {
+          password
+        };
+
+        const xhr = new XMLHttpRequest();
+        xhr.open("post", "/remove/" + document.URL.split("/remove/")[1], true);
+        xhr.setRequestHeader("Content-Type", "application/json; charset=UTF-8");
+
+        xhr.send(JSON.stringify(data));
+
+        xhr.onloadend = function() {
+          if (xhr.status === 200) {
+            const jsonResponse = JSON.parse(xhr.responseText);
+            console.log(jsonResponse);
+
+            if (jsonResponse.error) {
+              response.value = "Error: " + jsonResponse.error;
+            } else {
+              response.value =
+                "Usuário " + jsonResponse.user.name + " removido!";
+            }
+          }
+        };
+      }
+    </script>
+  </body>
+</html>
